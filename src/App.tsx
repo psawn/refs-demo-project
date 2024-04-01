@@ -9,7 +9,7 @@ export type ProjectData = {
   dueDate: string;
 };
 
-type Project = ProjectData & {
+export type Project = ProjectData & {
   id: number;
 };
 
@@ -32,6 +32,13 @@ function App() {
     }));
   }
 
+  function handleCancelAddProject() {
+    setProjectsState((prevState) => ({
+      ...prevState,
+      selectedProjectId: undefined,
+    }));
+  }
+
   function handleAddProject(projectData: ProjectData) {
     setProjectsState((prevState) => {
       const newProject: Project = {
@@ -41,17 +48,16 @@ function App() {
 
       return {
         ...prevState,
+        selectedProjectId: undefined,
         project: [...prevState.project, newProject],
       };
     });
   }
 
-  console.log(projectsState);
-
   let content;
 
   if (projectsState.selectedProjectId === null) {
-    content = <NewProject onAdd={handleAddProject} />;
+    content = <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject}/>;
   } else if (projectsState.selectedProjectId === undefined) {
     content = <NoProjectSelected onStartAddProject={handleStartAddProject} />;
   } else {
@@ -60,7 +66,7 @@ function App() {
 
   return (
     <main className="h-screen my-8 flex gap-8">
-      <ProjectsSidebar onStartAddProject={handleStartAddProject} />
+      <ProjectsSidebar onStartAddProject={handleStartAddProject} projects={projectsState.project} />
       {content}
     </main>
   );
