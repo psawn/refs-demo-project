@@ -10,7 +10,7 @@ export function ProjectsSidebar({
   onStartAddProject: () => void;
   onSelectProject: (id: number) => void;
   projects: Project[];
-  selectedProjectId?: number;
+  selectedProjectId: number | undefined | null;
 }) {
   return (
     <aside className="w-1/3 px-8 py-16 bg-stone-900 text-stone-50 md:w-72 rounded-r-xl">
