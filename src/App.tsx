@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NewProject } from "./components/NewProject";
 import { NoProjectSelected } from "./components/NoProjectSelected";
 import { ProjectsSidebar } from "./components/ProjectsSideBar";
+import { SelectedProject } from "./components/SelectedProject";
 
 export type ProjectData = {
   title: string;
@@ -14,7 +15,7 @@ export type Project = ProjectData & {
 };
 
 type ProjectsStateType = {
-  selectedProjectId: string | undefined | null;
+  selectedProjectId: number | undefined | null;
   project: Array<Project>;
 };
 
@@ -24,6 +25,14 @@ function App() {
     selectedProjectId: undefined,
     project: [],
   });
+
+  const selectedProject = projectsState.project.find(
+    (project) => project.id === projectsState.selectedProjectId
+  );
+
+  let content = selectedProject ? (
+    <SelectedProject project={selectedProject} />
+  ) : null;
 
   function handleStartAddProject() {
     setProjectsState((prevState) => ({
@@ -36,6 +45,13 @@ function App() {
     setProjectsState((prevState) => ({
       ...prevState,
       selectedProjectId: undefined,
+    }));
+  }
+
+  function handleSelectProject(id: number) {
+    setProjectsState((prevState) => ({
+      ...prevState,
+      selectedProjectId: id,
     }));
   }
 
@@ -54,8 +70,6 @@ function App() {
     });
   }
 
-  let content;
-
   if (projectsState.selectedProjectId === null) {
     content = <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject}/>;
   } else if (projectsState.selectedProjectId === undefined) {
@@ -66,7 +80,11 @@ function App() {
 
   return (
     <main className="h-screen my-8 flex gap-8">
-      <ProjectsSidebar onStartAddProject={handleStartAddProject} projects={projectsState.project} />
+      <ProjectsSidebar
+        onStartAddProject={handleStartAddProject}
+        onSelectProject={handleSelectProject}
+        projects={projectsState.project}
+      />
       {content}
     </main>
   );
